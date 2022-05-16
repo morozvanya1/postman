@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "f72c745a-311d-497e-a862-bba82afebab2",
+		"name": "Добавление документа Коман",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Новый документ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let getStatusCode = pm.response.code;\r",
+							"let statusCodeOk = 200;\r",
+							"let statusCodeBadRequest = 400;\r",
+							"let statusCodeUnauthorized = 401;\r",
+							"\r",
+							"if (getStatusCode == statusCodeOk) {\r",
+							"    pm.test(\"Получен успешный код ответа от сервера\", () => {\r",
+							"        pm.test(\"Информация по Документу (ENVELOPE) успешно записана в 'Переменные коллекции'\", () => {\r",
+							"            const responseJson = JSON.parse(responseBody);\r",
+							"            let envelopeId = responseJson.id;\r",
+							"            let envelopeUuid = responseJson.uuid;\r",
+							"\r",
+							"            pm.test(\"Уникальный ID Документа: \" + envelopeId, () => {\r",
+							"                pm.collectionVariables.set(\"envelopeId\", envelopeId);\r",
+							"            });\r",
+							"            pm.test(\"Уникальный UUID Документа: \" + envelopeUuid, () => {\r",
+							"                pm.collectionVariables.set(\"envelopeUuid\", envelopeUuid);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeBadRequest) {\r",
+							"    pm.test(\"Необходимо исправить 'Тело запроса'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeUnauthorized) {\r",
+							"    pm.test(\"Необходимо актуализировать 'Токен авторизации'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"Ошибка запроса\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNumber = pm.variables.replaceIn('{{$randomPassword}}');\r",
+							"\r",
+							"for (var i = 0; i < 1; i++){\r",
+							"    pm.collectionVariables.set(\"setEnvelopeName\" + i, \"Тестирование. Документ с номером - \" + randomNumber); \r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/newDocument.doc"
+						},
+						{
+							"key": "entityId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "{{setEnvelopeName0}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{sysComanUrl}}/rest/envelope/create",
+					"host": [
+						"{{sysComanUrl}}"
+					],
+					"path": [
+						"rest",
+						"envelope",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "sysComanUrl",
+			"value": "https://test3.coman.app",
+			"type": "string"
+		},
+		{
+			"key": "envelopeId",
+			"value": ""
+		},
+		{
+			"key": "envelopeUuid",
+			"value": ""
+		},
+		{
+			"key": "setEnvelopeName0",
+			"value": ""
+		}
+	]
+}
