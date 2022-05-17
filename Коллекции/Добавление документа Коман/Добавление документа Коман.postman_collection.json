@@ -6,23 +6,221 @@
 	},
 	"item": [
 		{
+			"name": "Добавление пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let getStatusCode = pm.response.code,\r",
+							"statusCodeOk = 200,\r",
+							"statusCodeBadRequest = 400,\r",
+							"statusCodeUnauthorized = 401;\r",
+							"\r",
+							"if (getStatusCode == statusCodeOk) {\r",
+							"    pm.test(\"Получен успешный код ответа от сервера\", () => {\r",
+							"        pm.test(\"Информация по Пользователю (CUSER) успешно записана в 'Переменные коллекции'\", () => {\r",
+							"            let responseJson = JSON.parse(responseBody),\r",
+							"            userId = responseJson.id,\r",
+							"            userUuid = responseJson.uuid;\r",
+							"\r",
+							"            pm.test(\"Уникальный ID Пользователя: \" + userId, () => {\r",
+							"                pm.collectionVariables.set(\"userId\", userId);\r",
+							"            });\r",
+							"            pm.test(\"Уникальный UUID Пользователя: \" + userUuid, () => {\r",
+							"                pm.collectionVariables.set(\"userUuid\", userUuid);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeBadRequest) {\r",
+							"    pm.test(\"Необходимо исправить 'Тело запроса'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeUnauthorized) {\r",
+							"    pm.test(\"Необходимо актуализировать 'Токен авторизации'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"Ошибка запроса\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test(\"Мастер-данные успешно записаны в 'Переменные коллекции'\", () => {\r",
+							"    let randomNumber = pm.variables.replaceIn('{{$randomPassword}}'),\r",
+							"    randomFirstName = pm.variables.replaceIn('{{$randomFirstName}}'),\r",
+							"    currentDate = new Date(), \r",
+							"    passportIssueDate = currentDate.getFullYear() + '-' + (currentDate.getMonth()+1) + '-' + currentDate.getDate();\r",
+							"\r",
+							"    for (var i = 0; i < 1; i++) {\r",
+							"        pm.collectionVariables.set(\"setEnvelopeName\" + i, \"Тестирование. Документ с номером - \" + randomNumber);\r",
+							"        pm.collectionVariables.set(\"setFirstName\" + i, randomFirstName);\r",
+							"        pm.collectionVariables.set(\"setPhone\" + i, \"+7000\" + snils().substring(0, 7));\r",
+							"        pm.collectionVariables.set(\"setSnils\" + i, snils());\r",
+							"        pm.collectionVariables.set(\"setPassportNumber\" + i, snils().substring(0, 6));\r",
+							"        pm.collectionVariables.set(\"setPassportBatch\" + i, snils().substring(0, 4));\r",
+							"        pm.collectionVariables.set(\"setPassportIssueDate\" + i, passportIssueDate);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"function snils() {\r",
+							"    let rand1 = zeros(String(Math.floor((Math.random() * 998) + 2)), 3),\r",
+							"    rand2 = zeros(String(Math.floor((Math.random() * 999) + 1)), 3),\r",
+							"    rand3 = zeros(String(Math.floor((Math.random() * 999) + 1)), 3),\r",
+							"    rezult = rand1 + rand2 + rand3,\r",
+							"    kontr = String(9 * rezult[0] + 8 * rezult[1] + 7 * rezult[2] +\r",
+							"        6 * rezult[3] + 5 * rezult[4] + 4 * rezult[5] +\r",
+							"        3 * rezult[6] + 2 * rezult[7] + 1 * rezult[8]);\r",
+							"    if (kontr < 100) {\r",
+							"        kontr = kontr;\r",
+							"    } else if (kontr > 101) {\r",
+							"        kontr = String(kontr % 101);\r",
+							"        kontr = zeros(kontr, 2);\r",
+							"        if (kontr > 99) {\r",
+							"            kontr = '00';\r",
+							"        }\r",
+							"    } else {\r",
+							"        kontr = '00';\r",
+							"    }\r",
+							"    rezult = rezult + kontr;\r",
+							"    return rezult;\r",
+							"}\r",
+							"\r",
+							"function zeros(str,lng) {\r",
+							"    let factlength = str.length;\r",
+							"    if (factlength < lng) {\r",
+							"        for (var i = 0; i < (lng - factlength); i++) {\r",
+							"            str = '0' + str;\r",
+							"        }\r",
+							"    }\r",
+							"    return str;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lastName",
+							"value": "Тест",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "{{setFirstName0}}",
+							"type": "text"
+						},
+						{
+							"key": "middleName",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "profiles",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "entities",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "phone",
+							"value": "{{setPhone0}}",
+							"type": "text"
+						},
+						{
+							"key": "snils",
+							"value": "{{setSnils0}}",
+							"type": "text"
+						},
+						{
+							"key": "passportType",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "passportBatchNumber",
+							"value": "{{setPassportBatch0}} {{setPassportNumber0}}",
+							"type": "text"
+						},
+						{
+							"key": "passportNumber",
+							"value": "{{setPassportNumber0}}",
+							"type": "text"
+						},
+						{
+							"key": "passportIssuingCenter",
+							"value": "УФМС",
+							"type": "text"
+						},
+						{
+							"key": "passportIssueDate",
+							"value": "{{setPassportIssueDate0}}",
+							"type": "text"
+						},
+						{
+							"key": "passportExpirationDate",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "passportBatch",
+							"value": "{{setPassportBatch0}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{sysComanUrl}}/rest/cuser_coman/create",
+					"host": [
+						"{{sysComanUrl}}"
+					],
+					"path": [
+						"rest",
+						"cuser_coman",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Новый документ",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"let getStatusCode = pm.response.code;\r",
-							"let statusCodeOk = 200;\r",
-							"let statusCodeBadRequest = 400;\r",
-							"let statusCodeUnauthorized = 401;\r",
+							"let getStatusCode = pm.response.code,\r",
+							"statusCodeOk = 200,\r",
+							"statusCodeBadRequest = 400,\r",
+							"statusCodeUnauthorized = 401;\r",
 							"\r",
 							"if (getStatusCode == statusCodeOk) {\r",
 							"    pm.test(\"Получен успешный код ответа от сервера\", () => {\r",
 							"        pm.test(\"Информация по Документу (ENVELOPE) успешно записана в 'Переменные коллекции'\", () => {\r",
-							"            const responseJson = JSON.parse(responseBody);\r",
-							"            let envelopeId = responseJson.id;\r",
-							"            let envelopeUuid = responseJson.uuid;\r",
+							"            let responseJson = JSON.parse(responseBody),\r",
+							"            envelopeId = responseJson.id,\r",
+							"            envelopeUuid = responseJson.uuid;\r",
 							"\r",
 							"            pm.test(\"Уникальный ID Документа: \" + envelopeId, () => {\r",
 							"                pm.collectionVariables.set(\"envelopeId\", envelopeId);\r",
@@ -56,11 +254,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"let randomNumber = pm.variables.replaceIn('{{$randomPassword}}');\r",
-							"\r",
-							"for (var i = 0; i < 1; i++){\r",
-							"    pm.collectionVariables.set(\"setEnvelopeName\" + i, \"Тестирование. Документ с номером - \" + randomNumber); \r",
-							"}"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -98,6 +292,85 @@
 						"rest",
 						"envelope",
 						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Редактирование схемы подписания",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let getStatusCode = pm.response.code,\r",
+							"statusCodeOk = 200,\r",
+							"statusCodeBadRequest = 400,\r",
+							"statusCodeUnauthorized = 401;\r",
+							"\r",
+							"if (getStatusCode == statusCodeOk) {\r",
+							"    pm.test(\"Получен успешный код ответа от сервера\", () => {\r",
+							"        pm.test(\"Схема подписания по Документу (ENVELOPE) успешно обновлена\", () => {\r",
+							"            let responseJson = JSON.parse(responseBody),\r",
+							"            requestUuid = responseJson.requestUuid;\r",
+							"\r",
+							"            pm.test(\"Уникальный UUID Запроса: \" + requestUuid, () => {\r",
+							"                pm.collectionVariables.set(\"requestUuid\", requestUuid);\r",
+							"            });\r",
+							"        });\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeBadRequest) {\r",
+							"    pm.test(\"Необходимо исправить 'Тело запроса'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else if (getStatusCode == statusCodeUnauthorized) {\r",
+							"    pm.test(\"Необходимо актуализировать 'Токен авторизации'\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"Ошибка запроса\", () => {\r",
+							"        pm.response.to.have.status(statusCodeOk);\r",
+							"        postman.setNextRequest(null);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"envelopeId\": {{envelopeId}},\r\n    \"stages\": [\r\n        {\r\n            \"rejectForbidden\": true,\r\n            \"facsimileDisabled\": true,\r\n            \"daysToSign\": null,\r\n            \"signers\": [\r\n                {\r\n                    \"userId\": {{userId}},\r\n                    \"rejected\": false,\r\n                    \"signed\": false\r\n                }\r\n            ],\r\n            \"signOrder\": 1,\r\n            \"name\": \"оЗНАКОМЛЕНИЕ\"\r\n        },\r\n        {\r\n            \"rejectForbidden\": false,\r\n            \"facsimileDisabled\": false,\r\n            \"daysToSign\": null,\r\n            \"signers\": [\r\n                {\r\n                    \"userId\": {{userId}},\r\n                    \"rejected\": false,\r\n                    \"signed\": false\r\n                }\r\n            ],\r\n            \"signOrder\": 2,\r\n            \"name\": \"пОДПИСАНИЕ\"\r\n        },\r\n        {\r\n            \"rejectForbidden\": true,\r\n            \"facsimileDisabled\": false,\r\n            \"daysToSign\": 1,\r\n            \"signers\": [\r\n                {\r\n                    \"userId\": {{userId}},\r\n                    \"rejected\": false,\r\n                    \"signed\": false\r\n                }\r\n            ],\r\n            \"signOrder\": 3,\r\n            \"name\": \"сРОК ПОДПИСАНИЯ\"\r\n        }\r\n    ],\r\n    \"name\": \"Тестирование. Документ с номером - {{setEnvelopeName0}}\",\r\n    \"comment\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{sysComanUrl}}/rest/envelope/update_stages",
+					"host": [
+						"{{sysComanUrl}}"
+					],
+					"path": [
+						"rest",
+						"envelope",
+						"update_stages"
 					]
 				}
 			},
@@ -141,6 +414,42 @@
 			"type": "string"
 		},
 		{
+			"key": "setEnvelopeName0",
+			"value": ""
+		},
+		{
+			"key": "setSnils0",
+			"value": ""
+		},
+		{
+			"key": "setFirstName0",
+			"value": ""
+		},
+		{
+			"key": "setPhone0",
+			"value": ""
+		},
+		{
+			"key": "setPassportNumber0",
+			"value": ""
+		},
+		{
+			"key": "setPassportBatch0",
+			"value": ""
+		},
+		{
+			"key": "setPassportIssueDate0",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "userUuid",
+			"value": ""
+		},
+		{
 			"key": "envelopeId",
 			"value": ""
 		},
@@ -149,7 +458,7 @@
 			"value": ""
 		},
 		{
-			"key": "setEnvelopeName0",
+			"key": "requestUuid",
 			"value": ""
 		}
 	]
