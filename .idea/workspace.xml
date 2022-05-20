@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="acee11f9-58bf-4d0f-92d3-cdc8b8600ac9" name="Changes" comment="Рефакторинг">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Коллекции/Добавление документа Коман/Добавление документа Коман.postman_collection.json" beforeDir="false" afterPath="$PROJECT_DIR$/Коллекции/Добавление документа Коман/Добавление документа Коман.postman_collection.json" afterDir="false" />
-    </list>
+    <list default="true" id="acee11f9-58bf-4d0f-92d3-cdc8b8600ac9" name="Changes" comment="Добавление создания пользователя и редактирования схемы подписания" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +59,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652692119110</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Добавление создания пользователя и редактирования схемы подписания">
+      <created>1652786945041</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1652786945041</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -80,6 +84,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Добавление документа Коман -&gt; Новый документ (1)" />
     <MESSAGE value="Рефакторинг" />
-    <option name="LAST_COMMIT_MESSAGE" value="Рефакторинг" />
+    <MESSAGE value="Добавление создания пользователя и редактирования схемы подписания" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление создания пользователя и редактирования схемы подписания" />
   </component>
 </project>
